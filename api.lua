@@ -47,9 +47,9 @@ moon_rover.config = {
 	pivot_turn_speed = 1.1,       -- rad/s in-place skid-steer when stopped
 
 	-- Driver seat & camera offsets (Luanti 1/10-node attachment/eye units)
-	seat_position = {x = 0, y = 5, z = 2},
+	seat_position = {x = 0, y = 3, z = 5},    -- cockpit driver seat right behind windshield
 	seat_rotation = {x = 0, y = 0, z = 0},    -- model & driver both face Luanti +Z forward
-	eye_offset_first = {x = 0, y = 2, z = 0},
+	eye_offset_first = {x = 0, y = -2, z = 0}, -- eye centered in windshield (y ~ 1.55n)
 	eye_offset_third_back = {x = 0, y = 8, z = -5},
 	eye_offset_third_front = {x = 0, y = 8, z = 5},
 	board_cooldown = 0.35,        -- seconds before sneak can dismount

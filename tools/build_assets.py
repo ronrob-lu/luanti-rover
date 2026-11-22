@@ -375,7 +375,10 @@ def render_inventory_icon(positions, uvs, indices, atlas_path: Path, out_inv: Pa
         v = ((uvs[i0][1] + uvs[i1][1] + uvs[i2][1]) / 3.0) % 1.0
         px = min(aw - 1, max(0, int(u * aw)))
         py = min(ah - 1, max(0, int(v * ah)))
-        r, g, b, _ = atlas.getpixel((px, py))
+        r, g, b, a = atlas.getpixel((px, py))
+        if a == 0:
+            # Render transparent windows as sleek tinted glass on the 64x64 inventory icon
+            r, g, b = 48, 72, 96
 
         a, b_v, c = positions[i0], positions[i1], positions[i2]
         ux, uy, uz = b_v[0] - a[0], b_v[1] - a[1], b_v[2] - a[2]
@@ -410,13 +413,19 @@ def build_quaternius_rover(src_gltf: Path, out_glb: Path, out_atlas: Path, out_i
     buf_uri = gltf["buffers"][0]["uri"]
     raw_buf = base64.b64decode(buf_uri.split(",", 1)[1])
 
-    # Extract Atlas PNG
+    # Extract Atlas PNG and make pixel (6, 0) (used exclusively by the 56 rover window
+    # triangles) transparent (alpha = 0) so Luanti's alpha-clip material renders clear
+    # cockpit windows with zero depth-sorting artifacts.
     img_info = gltf["images"][0]
     img_bv = gltf["bufferViews"][img_info["bufferView"]]
     img_off = img_bv.get("byteOffset", 0)
     img_bytes = raw_buf[img_off : img_off + img_bv["byteLength"]]
     out_atlas.parent.mkdir(parents=True, exist_ok=True)
     out_atlas.write_bytes(img_bytes)
+
+    atlas_img = Image.open(out_atlas).convert("RGBA")
+    atlas_img.putpixel((6, 0), (120, 180, 220, 0))
+    atlas_img.save(out_atlas)
 
     # First pass: collect body + 4 wheel nodes and compute global min_y
     scene_nodes = gltf["scenes"][gltf.get("scene", 0)]["nodes"]
