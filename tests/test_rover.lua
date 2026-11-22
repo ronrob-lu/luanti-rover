@@ -632,6 +632,8 @@ run_test("both rovers registered with exact crafting recipes and stepheight >= 1
 	assert(state.entities["moon_rover:rover"].initial_properties.stepheight >= 1.1)
 	assert(state.entities["moon_rover:auto_rover"].initial_properties.stepheight >= 1.1)
 	assert(state.entities["moon_rover:rover"].initial_properties.mesh == "moon_rover.glb")
+	assert(state.entities["moon_rover:rover"].initial_properties.backface_culling == true)
+	assert(state.entities["moon_rover:rover"].initial_properties.use_texture_alpha == false)
 	assert(state.entities["moon_rover:auto_rover"].initial_properties.mesh == "moon_rover_auto.glb")
 
 	assert(#state.crafts == 2, "expected 2 craft recipes")
